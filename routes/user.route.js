@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import UserModel from '../models/User.model.js'
+import fileUpload from '../config/cloudinary.config.js'
 import isAuthenticatedMiddleware from '../middlewares/isAuthenticatedMiddleware.js'
 
 const userRouter = Router()
@@ -15,15 +16,12 @@ userRouter.get('/', isAuthenticatedMiddleware, async (req, res) => {
 })
 
 
-userRouter.post('/', isAuthenticatedMiddleware, async (req, res) => {
+userRouter.post('/', async (req, res) => {
     //Adicionamos ao payload o id do usuario que vem do req.user gerado no middleware de autenticação
-    const payload = { ...req.body, user: req.user.id }
+    const payload = { ...req.body}
 
     try {
         const newUser = await UserModel.create(payload)
-
-        //Atualizar o user vinculado com todos os e-mails ele possa ter
-        await user.findOneAndUpdate({_id: req.user.id}, {$push: {user: newUser._id }})
 
         return res.status(201).json(newUser)      
     } catch (error) {
@@ -48,15 +46,20 @@ userRouter.put('/:id', isAuthenticatedMiddleware, async (req, res) => {
     }
 })
 
-exchangeRouter.delete('/:id', isAuthenticatedMiddleware, async (req, res) => {
+userRouter.delete('/:id', isAuthenticatedMiddleware, async (req, res) => {
     const { id } = req.params
     try {
-        await exchange.findOneAndDelete({_id: id, user: req.user.id})
+        await user.findOneAndDelete({_id: id, user: req.user.id})
         return res.status(204).json()      
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: 'Internal Server Error'})
     }
+})
+
+
+userRouter.post("/upload", isAuthenticatedMiddleware, fileUpload.single('pictureUser'), (req, res) => {
+    res.status(201).json({url: req.file.path})
 })
 
 export default userRouter
