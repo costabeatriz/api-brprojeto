@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
+import Agency from '../models/Agency.model.js'
 import User from '../models/User.model.js'
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
@@ -11,16 +12,34 @@ authRouter.post('/sign-up', async (req, res) => {
 
     try {
 
+        if(user.cpf) {
+
         const userExists = await User.findOne({email: user.email})
         if(userExists) {
             throw new Error('User exists')
         }
+    } if(user.cnpj) {
+        const agencyExists = await Agency.findOne({email: user.email})
+        if(userExists) {
+            throw new Error('User exists')
+        }
 
+    }
         const salt = bcrypt.genSaltSync(+process.env.SALT_ROUNDS)
         const passwordHash = bcrypt.hashSync(user.password, salt)
+        const userData = {...user, passwordHash}
 
-        const newUser = await User.create({ ...user, passwordHash })
-        if(newUser) {
+        if (user.cpf){
+
+            const newUser = await User.create(userData)
+            if(newUser) {
+                return res.status(201).json({message: 'User Created'})
+            }
+
+        }
+
+        const newAgency = await Agency.create(userData)
+        if(newAgency) {
             return res.status(201).json({message: 'User Created'})
         }
     } catch (error) {
