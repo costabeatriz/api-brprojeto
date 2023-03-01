@@ -8,40 +8,36 @@ import jwt from 'jsonwebtoken'
 const authRouter = Router()
 
 authRouter.post('/sign-up', async (req, res) => {
-    const user = req.body
+    const payload = req.body
 
     try {
 
-        if(user.cpf) {
-
-        const userExists = await User.findOne({email: user.email})
-        if(userExists) {
-            throw new Error('User exists')
-        }
-    } if(user.cnpj) {
-        const agencyExists = await Agency.findOne({email: user.email})
-        if(userExists) {
-            throw new Error('User exists')
-        }
-
-    }
-        const salt = bcrypt.genSaltSync(+process.env.SALT_ROUNDS)
-        const passwordHash = bcrypt.hashSync(user.password, salt)
-        const userData = {...user, passwordHash}
-
-        if (user.cpf){
-
-            const newUser = await User.create(userData)
-            if(newUser) {
-                return res.status(201).json({message: 'User Created'})
+        if(payload.cpf) {
+            payload.type = "user"
+            const userExists = await User.findOne({email: payload.email})
+            if(userExists) {
+                throw new Error('User exists')
             }
-
+        }  
+        
+        if(payload.cnpj) {
+            payload.type = "agency"
+            const agencyExists = await User.findOne({email: payload.email})
+            if(agencyExists) {
+                throw new Error('Agency exists')
+            }
         }
 
-        const newAgency = await Agency.create(userData)
-        if(newAgency) {
+        const salt = bcrypt.genSaltSync(+process.env.SALT_ROUNDS)
+        const passwordHash = bcrypt.hashSync(payload.password, salt)
+        const userData = {...payload, passwordHash}
+
+        const newUser = await User.create(userData)
+        if(newUser) {
             return res.status(201).json({message: 'User Created'})
         }
+
+
     } catch (error) {
         console.log(error)
 
@@ -72,6 +68,8 @@ authRouter.post('/login', async (req, res) => {
             throw new Error('User does not exists')
         }
 
+        if(user.cpf) {
+
         console.log(user)
 
         console.log('hash', password, user.passwordHash)
@@ -81,12 +79,17 @@ authRouter.post('/login', async (req, res) => {
         if(!passwordMatch) {
             throw new Error('Password does not match')
         }
+            
+        }
 
         const secret = process.env.JWT_SECRET
         const expiresIn = process.env.JWT_EXPIRES
+  
 
-       
         const token = jwt.sign({id: user._id, email: user.email}, secret, {expiresIn})
+
+
+        
         
         return res.status(200).json({token})
     } catch (error) {

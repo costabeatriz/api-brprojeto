@@ -9,8 +9,18 @@ const userSchema = new Schema({
     },
 
     cpf: {
-        type: Number,
-        required: true
+        type: Number
+    },
+
+    cnpj: {
+        type: Number
+
+    },
+
+    type: {
+        type: String,
+        enum: ["user","agency"]
+
     },
 
     email: {
