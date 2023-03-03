@@ -38,7 +38,7 @@ const userSchema = new Schema({
     
     kitExchange: {
         type: Schema.Types.ObjectId,
-        ref: 'Exchange'
+        ref: 'Agency'
 
     },
 }, 
