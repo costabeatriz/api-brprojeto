@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import validator from 'validator'
 const { model, Schema } = mongoose
 
-const userSchema = new Schema({
+const agencySchema = new Schema({
     agency: {
         type: String,
         required: true
@@ -46,4 +46,4 @@ const userSchema = new Schema({
 
 {timestamps: true})
 
-export default model('Agency', userSchema, 'Agencys')
+export default model('Agency', agencySchema)

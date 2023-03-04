@@ -1,15 +1,21 @@
 import mongoose from 'mongoose'
 import validator from 'validator'
+
 const { model, Schema } = mongoose
 
-const userSchema = new Schema({
+const exchangeSchema = new Schema({
+    agency: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
+
     agencyName: {
         type: String,
         required: true
     },
 
     city: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -28,21 +34,17 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-
-
-
     accommodationInformation: {
         type: String,
         required: true
     },
     
     kitExchange: {
-        type: Schema.Types.ObjectId,
-        ref: 'Agency'
-
-    },
+        type: String,
+        required: true
+    }
 }, 
 
 {timestamps: true})
 
-export default model('Exchange', userSchema, 'Exchange')
+export default model('Exchange', exchangeSchema)
