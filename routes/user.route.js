@@ -15,6 +15,18 @@ userRouter.get('/', isAuthenticatedMiddleware, async (req, res) => {
     }
 })
 
+userRouter.get('/:id', async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const userId = await UserModel.findById(id)
+        return res.status(200).json(userId)      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: 'Internal Server Error'})
+    }
+})
+
 userRouter.put('/:id', isAuthenticatedMiddleware, async (req, res) => {
     const { id } = req.params
     const payload = req.body
