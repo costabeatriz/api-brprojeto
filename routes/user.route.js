@@ -55,7 +55,7 @@ userRouter.delete('/:id', isAuthenticatedMiddleware, async (req, res) => {
 })
 
 
-userRouter.post("/upload", isAuthenticatedMiddleware, fileUpload.single('pictureUser'), (req, res) => {
+userRouter.post("/upload", fileUpload.single('pictureUser'), (req, res) => {
     res.status(201).json({url: req.file.path})
 })
 
