@@ -13,7 +13,7 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         allowed_formats: ['jpg', 'png'],
-        folder: 'bmdb_images'
+        folder: 'images'
     }
 })
 
