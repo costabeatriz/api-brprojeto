@@ -14,6 +14,18 @@ agencyRouter.get('/', isAuthenticatedMiddleware, async (req, res) => {
     }
 })
 
+agencyRouter.get('/:id', async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const agencyId = await AgencyModel.findById(id)
+        return res.status(200).json(agencyId)      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: 'Internal Server Error'})
+    }
+})
+
 
 agencyRouter.put('/:id', isAuthenticatedMiddleware, async (req, res) => {
     const { id } = req.params

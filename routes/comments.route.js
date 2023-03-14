@@ -14,6 +14,18 @@ commentsRouter.get('/', async (req, res) => {
     }
 })
 
+commentsRouter.get('/:id', async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const commentsId = await Comments.findById(id)
+        return res.status(200).json(commentsId)      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: 'Internal Server Error'})
+    }
+})
+
 
 commentsRouter.post('/', isAuthenticatedMiddleware , async (req, res) => {
     const payload = req.body

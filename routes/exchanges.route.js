@@ -16,6 +16,19 @@ exchangeRouter.get('/', async (req, res) => {
 })
 
 
+exchangeRouter.get('/:id', async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const exchangeId = await ExchangeModel.findById(id)
+        return res.status(200).json(exchangeId)      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: 'Internal Server Error'})
+    }
+})
+
+
 exchangeRouter.post('/', isAuthenticatedMiddleware, async (req, res) => {
     //Adicionamos ao payload o id da agency que vem do req.agency gerado no middleware de autenticação
     const payload = { ...req.body, agency: req.user.id }
