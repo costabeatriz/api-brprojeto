@@ -8,28 +8,31 @@ import jwt from 'jsonwebtoken'
 const authRouter = Router()
 
 authRouter.post('/sign-up', async (req, res) => {
+    const {email, password} = req.body
     const payload = req.body
+ 
 
     try {
 
         if(payload.cpf) {
-            payload.type = "user"
-            const userExists = await User.findOne({email: payload.email})
+            req.body.type = "user"
+            const userExists = await User.findOne({email})
             if(userExists) {
                 throw new Error('User exists')
             }
         }  
         
         if(payload.cnpj) {
-            payload.type = "agency"
-            const agencyExists = await User.findOne({email: payload.email})
+            req.body.type = "agency"
+            const agencyExists = await User.findOne({email})
             if(agencyExists) {
                 throw new Error('Agency exists')
             }
         }
 
         const salt = bcrypt.genSaltSync(+process.env.SALT_ROUNDS)
-        const passwordHash = bcrypt.hashSync(payload.password, salt)
+        console.log("teste:", password, salt)
+        const passwordHash = bcrypt.hashSync(password, salt)
         const userData = {...payload, passwordHash}
 
         const newUser = await User.create(userData)
