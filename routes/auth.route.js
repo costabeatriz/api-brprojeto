@@ -89,12 +89,12 @@ authRouter.post('/login', async (req, res) => {
         const expiresIn = process.env.JWT_EXPIRES
   
 
-        const token = jwt.sign({id: user._id, email: user.email}, secret, {expiresIn})
+        const token = jwt.sign({id: user._id, email: user.email, type: user.type }, secret, {expiresIn})
 
 
         
         
-        return res.status(200).json({token})
+        return res.status(200).json({token, type: user.type})
     } catch (error) {
         console.log(error)
         return res.status(401).json({message: 'Unauthorized'})
