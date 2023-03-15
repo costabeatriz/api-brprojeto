@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import ExchangeModel from '../models/Exchange.model.js'
+import fileUpload from '../config/cloudinary.config.js'
 import isAuthenticatedMiddleware from '../middlewares/isAuthenticatedMiddleware.js'
 import User from '../models/User.model.js'
 
@@ -79,5 +80,10 @@ exchangeRouter.delete('/:id', isAuthenticatedMiddleware, async (req, res) => {
         return res.status(500).json({message: 'Internal Server Error'})
     }
 })
+
+exchangeRouter.post("/upload", fileUpload.single('pictureExchange'), (req, res) => {
+    res.status(201).json({url: req.file.path})
+})
+
 
 export default exchangeRouter
