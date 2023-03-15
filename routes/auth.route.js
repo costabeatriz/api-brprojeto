@@ -8,31 +8,28 @@ import jwt from 'jsonwebtoken'
 const authRouter = Router()
 
 authRouter.post('/sign-up', async (req, res) => {
-    const {email, password} = req.body
     const payload = req.body
- 
 
     try {
 
         if(payload.cpf) {
-            req.body.type = "user"
-            const userExists = await User.findOne({email})
+            payload.type = "user"
+            const userExists = await User.findOne({email: payload.email})
             if(userExists) {
                 throw new Error('User exists')
             }
         }  
         
         if(payload.cnpj) {
-            req.body.type = "agency"
-            const agencyExists = await User.findOne({email})
+            payload.type = "agency"
+            const agencyExists = await User.findOne({email: payload.email})
             if(agencyExists) {
                 throw new Error('Agency exists')
             }
         }
 
         const salt = bcrypt.genSaltSync(+process.env.SALT_ROUNDS)
-        console.log("teste:", password, salt)
-        const passwordHash = bcrypt.hashSync(password, salt)
+        const passwordHash = bcrypt.hashSync(payload.password, salt)
         const userData = {...payload, passwordHash}
 
         const newUser = await User.create(userData)
@@ -89,12 +86,12 @@ authRouter.post('/login', async (req, res) => {
         const expiresIn = process.env.JWT_EXPIRES
   
 
-        const token = jwt.sign({id: user._id, email: user.email, type: user.type }, secret, {expiresIn})
+        const token = jwt.sign({id: user._id, email: user.email}, secret, {expiresIn})
 
 
         
         
-        return res.status(200).json({token, type: user.type})
+        return res.status(200).json({token})
     } catch (error) {
         console.log(error)
         return res.status(401).json({message: 'Unauthorized'})

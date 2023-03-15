@@ -14,6 +14,11 @@ const exchangeSchema = new Schema({
         required: true
     },
 
+    action: {
+        type: String,
+        required: true
+    },
+
     city: {
         type: String,
         required: true
@@ -40,6 +45,11 @@ const exchangeSchema = new Schema({
     },
     
     kitExchange: {
+        type: String,
+        required: true
+    },
+
+    price: {
         type: String,
         required: true
     }
