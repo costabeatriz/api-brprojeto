@@ -9,7 +9,7 @@ const exchangeSchema = new Schema({
         ref: "User"
     },
 
-    agencyName: {
+    agency: {
         type: String,
         required: true
     },
