@@ -31,7 +31,7 @@ exchangeRouter.get('/:id', async (req, res) => {
 
 
 exchangeRouter.post('/', isAuthenticatedMiddleware, async (req, res) => {
-    //Adicionamos ao payload o id da agency que vem do req.agency gerado no middleware de autenticação
+
     const payload = { ...req.body, agency: req.user.id }
 
     try {
