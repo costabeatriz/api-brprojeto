@@ -63,10 +63,8 @@ commentsRouter.delete('/:id', isAuthenticatedMiddleware, async (req, res) => {
     const { id } = req.params
 
     try {
-        await comments.findOneAndDelete(            
-            {_id: id, comments: req.comments.id}, 
-            payload, 
-            { new: true })
+        await Comments.findOneAndDelete(            
+            {_id: id})
         return res.status(204).json()      
     } catch (error) {
         console.log(error)
