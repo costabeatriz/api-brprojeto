@@ -63,8 +63,8 @@ authRouter.post('/login', async (req, res) => {
         }
         const secret = process.env.JWT_SECRET
         const expiresIn = process.env.JWT_EXPIRES
-        const token = jwt.sign({id: user._id, email: user.email}, secret, {expiresIn})
-        return res.status(200).json({token})
+        const token = jwt.sign({id: user._id, email: user.email, type: user.type}, secret, {expiresIn})
+        return res.status(200).json({token, user: {_id: user._id, name: user.name, type: user.type}})
     } catch (error) {
         console.log(error)
         return res.status(401).json({message: 'Unauthorized'})
