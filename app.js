@@ -11,6 +11,14 @@ import authRouter from './routes/auth.route.js'
 const app = express()
 connectDb()
 
+app.use(cors({ origin: process.env.REACT_APP_API_URL }));
+app.options("*", cors());
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    app.use(cors());
+    next();
+});
+
 app.use(cors())
 app.use(express.json())
 app.use('/exchange', exchangeRouter)
